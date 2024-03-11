@@ -1,0 +1,116 @@
+*{
+    padding-left: 15px;
+    background-color: rgb(180, 180, 180);
+}
+
+.title{
+    padding-left: 10px;
+}
+
+.partOne{
+    padding-top: 10px;
+    display: flex;
+}
+
+.partOne > div > select{
+    background-color: white;
+    outline: none;
+    border-radius: 20px;
+}
+
+.partTwo{
+    padding-top: 10px;
+    display: flex;
+}
+
+.partTwo > div > .summary{
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 500px;
+    outline: none;
+}
+
+.partTwo > div > .check{
+    margin-top: 0px;
+}
+
+.partThree{
+    padding-top: 10px;
+    display: flex;
+}
+.partThree > div > textarea{
+    margin-left: 43px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 800px;
+    height: 50px;
+    overflow-y: scroll;
+    outline:none;
+}
+.partFour{
+    padding-top: 10px;
+    display: flex;
+}
+.partFour > div > textarea{
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 800px;
+    height: 50px;
+    overflow-y: scroll;
+    outline:none;
+}
+
+.partFive{
+    padding-top: 10px;
+    display: flex;
+}
+
+.partFive > div > select{
+    background-color: white;
+    outline: none;
+    border-radius: 20px;
+}
+
+.partFive > div > input{
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+}
+
+.partSix{
+    display: flex;
+}
+
+.partSix > div > select{
+    background-color: white;
+    outline: none;
+    border-radius: 20px;
+}
+
+.partOne > div > input{
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+}
+
+.buttons{
+    padding-left: 10px;
+}
+
+.buttons > div > button{
+    margin: 10px 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-left: 7px;
+    background-color: rgb(150, 150, 150);
+    cursor: pointer;
+}
+
+.buttons > div > button:hover{
+    scale: 1.2;
+}

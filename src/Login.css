@@ -1,0 +1,13 @@
+.click{
+    display: flex;
+    justify-content: center;
+    margin-top:10%;
+}
+
+.click > button{
+    cursor: pointer;
+    color: black;
+    outline: none;
+    text-decoration: none;
+    border: none;
+}
