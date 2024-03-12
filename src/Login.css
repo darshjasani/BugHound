@@ -1,7 +1,22 @@
+.loginBody{
+    background-image: url('./login.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+}
+.card{
+    border: 0px solid black;
+    width: 500px;
+    height: 500px;
+    position: relative;
+    left: 35vw;
+    top:13vh;
+}
 .click{
     display: flex;
     justify-content: center;
-    margin-top:10%;
+    padding-top: 10%;
 }
 
 .click > button{
@@ -10,4 +25,100 @@
     outline: none;
     text-decoration: none;
     border: none;
+    font-size: 30px;
+    background-color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+.click > .loginButton{
+    padding-right: 10px;
+    padding-left: 20px;
+}
+
+.click > .signupButton{
+    border-left:2px solid grey;
+    padding-left: 10px;
+}
+
+.detailsBody{
+    
+    border: 0px solid grey;
+    border-radius: 15px;
+    height: 50vh;
+    padding: 10px;
+}
+
+.login{
+    position: relative;
+    padding-left: 80px;
+    padding-top: 60px;
+}
+
+.login > div > input{
+    outline: none;
+    width: 330px;
+    height: 30px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    margin: 10px;
+}
+.login > div > input::placeholder{
+    padding-left: 10px;
+}
+
+.login > div >  button{
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-left: 0px;
+    border: none;
+    border-radius: 5px;
+    border: 2px solid grey;
+    color: grey;
+}
+.login > div >  button:hover{
+    border: 2px solid rgb(57, 56, 56);
+    color: black;
+}
+
+.signup{
+    position: relative;
+    padding-left: 80px;
+    padding-top: 17px;
+}
+
+.signup > div > input{
+    outline: none;
+    width: 330px;
+    height: 30px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.signup > div > select{
+    outline: none;
+    padding: 3px;
+    border-radius: 10px;
+    font-size: 18px;
+    margin: 10px;
+}
+
+.signup > div > input::placeholder{
+    padding-left: 10px;
+}
+
+.signup > div >  button{
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: 20px;
+    margin-left: 0px;
+    border: none;
+    border-radius: 5px;
+    border: 2px solid grey;
+    color: grey;
+}
+.signup > div >  button:hover{
+    border: 2px solid rgb(57, 56, 56);
+    color: black;
 }
