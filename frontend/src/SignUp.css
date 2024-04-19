@@ -1,0 +1,146 @@
+.signupBody{
+    background-image: url('login_bg.svg'); 
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    width: 100vw;
+    -ms-text-size-adjust: 100%;
+    line-height: 1.25rem;
+    color: black;
+}
+
+.signupCard{
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.5);
+}
+
+.logo{
+    position: absolute;
+    right: 40%;
+    top:5%;
+    font-size: 20px;
+}
+
+.logo > img{
+    width: 50px;
+    height: 40px;
+    margin-top: -10%;
+    mix-blend-mode: multiply;
+}
+
+.signup{
+    padding-top: 40px;
+    padding-left: 50px;
+}
+
+.signup > p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.signup > hr{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    margin-top: 75px;
+    width: 60%;
+    border: 1px solid grey;
+    opacity: 0.4;
+
+}
+
+.signup > div > input{
+    margin: 5px;
+    width: 20rem;
+    height: 2rem;
+    border-radius: 2rem;
+    border: 1px solid grey;
+    padding-left: 10px;
+}
+
+.signup > div > input::placeholder{
+    padding-left: 10px;
+}
+
+.ssocialButtons{
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+}
+
+.signupButton{
+    position: absolute;
+    margin: 5px;
+    margin-top: 20px;
+}
+
+.signupButton > button{
+    width: 20rem;
+    height: 2rem;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    background-color: rgb(29, 166, 234);
+    cursor: pointer;
+    font-size: 15px;
+}
+.signupButton > button:hover{
+    border: 0.1rem solid rgb(94, 94, 241);
+    font-size: 18px;
+}
+
+.ssocialButtons{
+    display: flex;
+    margin: 0px;
+    font-size: 15px;
+    width: 18rem;
+    height: 2.5rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    background-color: rgb(31, 126, 241);
+}
+
+.ssocialButtons > img{
+    margin-left: 5px;
+    margin-top: 5px;
+    background-size: contain;
+    flex: 0.1;
+    width: 30px;
+    height: 30px;
+    background-color:white;
+    border-radius: 5px;
+}
+
+.ssocialButtons > span{
+    color: white;
+    padding-left: 30px;
+    padding-top: 10px;
+    font-size: 20px;
+}
+
+.ssocialButtons:hover{
+    border: 2px solid blue;
+}
+
+.loginLink{
+    position: absolute;
+    bottom: 2%;
+    right: 3%;
+    font-size: 15px;
+}
+
+.loginLink > a{
+    text-decoration: none;
+}
+

@@ -1,4 +1,6 @@
-
+body{
+    background-color: rgb(198, 194, 194);
+}
 .title{
     padding-left: 10px;
 }
