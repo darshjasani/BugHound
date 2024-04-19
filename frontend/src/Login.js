@@ -39,7 +39,7 @@ const Login = ()=>{
 
     const validateCredentials = async ()=>{
         try{
-            const response = await axios.get(`http://localhost:8000/login/${email}/${pwd}/${type}/`)
+            const response = await axios.get(`http://localhost:8000/login/${email}/${pwd}/`)
             
             let arr = {
                 username : response.data.username
@@ -64,11 +64,11 @@ const Login = ()=>{
 
                         <p>Login into your Account</p>
                         <div>
-                            Username :<br/>
+                            User ID :<br/>
                             <input 
                             className='email'
                             type='text' 
-                            placeholder='Enter your username'
+                            placeholder='Enter your user id'
                             onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
@@ -90,15 +90,7 @@ const Login = ()=>{
                             <a href='/forgetpwd'>Forget Password?</a>
                         </div>
 
-                        <div className='userType'>
-                            <div>Access Type : </div>
-                            <select onChange={(e)=>setType(e.target.value)}>
-                                <option value="">Select an option : </option>
-                                <option value="3">Admin</option>
-                                <option value="2">Tester</option>
-                                <option value="1">User</option>
-                            </select>
-                        </div>
+                        
                         <div className='loginButton'>
                             <button onClick={validate}>
                                 Login 
