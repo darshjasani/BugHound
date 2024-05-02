@@ -1,7 +1,3 @@
-Certainly! Here's a README template tailored to your project:
-
----
-
 # Bughound Bug Tracking Software
 
 ## Overview
