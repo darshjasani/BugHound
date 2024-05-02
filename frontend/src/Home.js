@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState, version }  from 'react';
 import { useNavigate } from 'react-router-dom';
-import Report  from './Report';
 import './Home.css'
 import CloseIcon from '@mui/icons-material/Close';
-import { Button } from '@mui/material';
+import { doc } from 'firebase/firestore';
+
 function Home() {
 
     const [showUser, setShowUser] = useState(false);
@@ -17,20 +17,34 @@ function Home() {
     const [fields, setFields] = useState([{ id: 1, value: '' }]);
     const [nextId, setNextId] = useState(2); 
     const [pName, setPName] = useState([])
+    const [upName, setUPName] = useState([])
     const [version, setVersion] = useState([])
     const [release, setRelease] = useState([])
     const [selectProgram, setSelectProgram] = useState(null);
     const [selectVersion, setSelectVersion] = useState(1);
+    const [selectRelease, setSelectRelease] = useState(1);
     const [pid, setpid] = useState(1);
     const [allUsers, setallUser] = useState([]);
     const [updateUser, setUpdateUser] = useState({id:"",username :"", loginid:"", password:"", accessType:""})
     const [updateProgram, setUpdateProgram] = useState({pid:"", programName:"", version:"", release:""})
     const [pAreaID, setpAreaID ] = useState();
     const [pArea, setpArea] = useState([]);
+    
+    const [reports, setReports] = useState([]);
+    const [selectProgramR, setSelectProgramR] = useState('');
+    const [selectUserR, setSelectUserR] = useState('');
+    const [selectSeverityR, setSelectSeverityR] = useState('');
+    const [defaultVal, setdefaultVal] = useState('')
+    const [report, setReport] = useState([]);
+    const [showTable,setshowTable] = useState(false);
+
+    const [selectAUserR, setSelectAUserR] = useState('');
+    const [selectStatus, setSelectStatusR] = useState('');
 
     const getProgramName = async () =>{
       try{
         const response = await axios.get(`http://localhost:8000/programs/`)
+
         setPName(
           response.data.map((program)=>({
             "pid":program.pid,
@@ -39,6 +53,14 @@ function Home() {
             "release":program.release
           }))
         )
+        
+        const unique = new Set()
+          response.data.map(program =>{
+            unique.add(program.programName)
+          })
+
+          setUPName(Array.from(unique));  
+      
       }catch(err){
         console.log(err);
       }
@@ -63,12 +85,44 @@ function Home() {
 
     const getProgramAreas = async() => {
       try{  
+        await getPid2();
+        
         const response = await axios.get(`http://localhost:8000/programareas/${pAreaID}/`)
         setpArea(
           response.data.map((area) => ({
             aid:area.aid,
             pid:area.pid,
             areaName:area.areaName,
+          }))
+        )
+      }catch(err){
+        console.log(err);
+      }
+    }
+
+    const getAllReports = async() => {
+      let url = ''
+      if(user.accessType === 3){
+        url = `http://localhost:8000/report/`
+      }
+      else{
+        url = `http://localhost:8000/report/user=${user.username}/`
+      }
+      try{
+        const response = await axios.get(url)
+        
+        setReports(
+          response.data.map((report)=>({
+            rid:report.rid,
+            programName:report.programName,
+            bugType: report.bugType,
+            severity: report.severity,
+            reproducible: report.reproducible,
+            summary: report.summary,
+            problem: report.problem,
+            suggestedFix: report.suggestedFix,
+            reportBy: report.reportBy,
+            date: report.date
           }))
         )
       }catch(err){
@@ -83,7 +137,8 @@ function Home() {
       const interval = setInterval(()=>{
         getallUsers();
         getProgramName();
-      }, 2000)
+        getAllReports();
+      }, 1000)
       
       return () => clearInterval(interval);
       
@@ -96,7 +151,9 @@ function Home() {
       else{
         try{
           await axios.post(`http://localhost:8000/login/`,userDetails)
+          alert("User Added Successfully!!");
           setuserDetails({username :"", loginid:"", password:"", accessType:""})
+          setShowUser(false)
         }catch(err){
           console.log(err);
         }
@@ -189,6 +246,7 @@ function Home() {
           const response = axios.post(`http://localhost:8000/programs/`,program)
           alert("Program added successfully");
           setShowProgram(false);
+          setProgram({programName :"", version:1, release:1})
         }catch(error){
           console.log(error);
         }
@@ -223,17 +281,35 @@ function Home() {
                   "pid":pid,
                   "areaName":field.value,
               })
+              
+              setShowProgramArea(false)
             }
         })
+        setFields([{ id: 1, value: '' }])
+
       }
     }
 
-    const getPid =  async (e) => {
+    const getPid2 = async () => {
+
       try{
-
-        const response = await axios.get(`http://localhost:8000/programs/${selectProgram}/${selectVersion}/${e.target.value}/`)
+        const response = await axios.get(`http://localhost:8000/programs/${selectProgram}/${selectVersion}/${selectRelease}/`)
         setpid(response.data[0].pid);
+        setpAreaID(response.data[0].pid);
+        console.log(selectProgram);
+        console.log(selectVersion);
+        console.log(selectRelease);
+        console.log(pAreaID);
+        
+      }catch(err){
+        console.log(err);
+      }
+    }
+    const getPid = async (e) => {
 
+      try{
+        setSelectRelease(e.target.value);
+        getPid2();
       }catch(err){
         console.log(err);
       }
@@ -242,13 +318,22 @@ function Home() {
     const getVersion = async(e) =>{
         try{
           const encodedValue = encodeURIComponent(e.target.value);
+         
           setSelectProgram(encodedValue);
           const response = await axios.get(`http://localhost:8000/programs/${encodedValue}/`)
-          setVersion(
-              response.data.map(version=>({
-                value:version.version
-              }))
-          ) 
+
+        //  setVersion(
+        //       response.data.map(version=>({
+        //         value:version.version
+        //       }))
+        //   ) 
+
+          const unique = new Set()
+          response.data.map(version =>{
+            unique.add(version.version)
+          })
+
+          setVersion(Array.from(unique));
         }catch(err){
           console.log(err);
         }
@@ -263,13 +348,16 @@ function Home() {
             value:release.release
           }))
         )
+
+        
+
       }catch(err){
         console.log(err);
       }
   }
 
     const exportUser = async () =>{
-      const currentDate = new Date().toLocaleString('en-US', { timeZone: 'UTC' });
+      const currentDate = new Date().toLocaleString('en-US', { timeZone: 'PST' });
       const textContent = `Current Time: ${currentDate}\n` + allUsers.map(user => `${user.id} | ${user.username} | ${user.loginid} | ${user.password} | ${user.accessType}`).join('\n');
       const element = document.createElement('a');
       const file = new Blob([textContent], { type: 'text/plain' });
@@ -282,14 +370,16 @@ function Home() {
     }
 
     const exportAreas = async  () =>{
-      const currentDate = new Date().toLocaleString('en-US', { timeZone: 'UTC' });
+      const currentDate = new Date().toLocaleString('en-US', { timeZone: 'PST' });
       const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
         <areas>
         <exportDateTime>${currentDate}</exportDateTime>
         ${pArea.map(area => `
           <area>
             <aid>${area.aid}</aid>
-            <pid>${area.pid}</pid>
+            <programName>${selectProgram}</programName>
+            <version>${selectVersion}</version>
+            <release>${selectRelease}</release>
             <areaName>${area.areaName}</areaName>
           </area>`).join('\n')}
         </areas>`;
@@ -303,14 +393,112 @@ function Home() {
           element.click();
           document.body.removeChild(element);
     }
+
+    const fetchReport = async () => {
+      
+      setshowTable(true);
+      let url = ''
+      if(selectUserR !== ''){
+        if(selectSeverityR !== ''){
+          url = `http://localhost:8000/report/severity=${selectSeverityR}/user=${selectUserR}/`
+        }
+        else{
+          url = `http://localhost:8000/report/user=${selectUserR}/`
+        }
+      }
+      else if(selectProgramR !== ''){
+        url = `http://localhost:8000/report/${selectProgramR}/`
+      }
+      else if(selectSeverityR !== ''){
+        url = `http://localhost:8000/report/severity=${selectSeverityR}/`
+      }
+      else if(selectAUserR !== ''){
+        url = `http://localhost:8000/report/assignto=${selectAUserR}/`
+      }
+      else if(selectStatus !== ''){
+        url = `http://localhost:8000/report/status=${selectStatus}/`
+      }
+      else{
+        url = `http://localhost:8000/report/`
+      }
+      
+        try{
+            const response = await axios.get(url);
+            console.log(response);
+            setReport(
+              response.data.map((report)=>({
+                rid:report.rid,
+                programName:report.programName,
+                bugType: report.bugType,
+                severity: report.severity,
+                reproducible: report.reproducible,
+                summary: report.summary,
+                problem: report.problem,
+                suggestedFix: report.suggestedFix,
+                reportBy: report.reportBy,
+                date: report.date,
+                status:report.status
+              }))
+            )
+          }catch(err){
+            console.log(err);
+        }
+      
+      
+    }
+
+    const resetSelect = () =>{
+      const tag = document.getElementsByClassName('select');
+      Array.from(tag).forEach(t=>{
+        t.selectedIndex = 0;
+      })
+      setshowTable(false);
+      setSelectProgramR('');
+      setSelectSeverityR('');
+      setSelectUserR('');
+    }
+
     return (
       <>
-          <div>
-            <button onClick={logoutUser}>Logout</button>
-          </div>
+        <div className='homeBody'>
+        <>
+        {user.accessType !== 3 ? 
+        
+        <>
 
-          <div>
-            <button onClick={() => setShowUser(true)}>Add User</button>
+            <div className='navbar'>
+              <button className='reportButton' onClick={() => history('/report')}>Add Report</button>
+            
+            
+              <button className='reportButton' onClick={logoutUser}>Logout</button>
+            
+
+
+            </div>
+        </> :
+
+        <>
+          <div className='navbar'>
+
+            <div>
+              <button onClick={() => setShowUser(true)}>Add User</button>
+            </div>
+
+            <div>
+              <button onClick={()=> setShowProgram(true)}>Add Programs</button>
+            </div>
+
+            <div>
+              <button onClick={()=>setShowProgramArea(true)}>Add Program Areas</button>
+            </div>
+
+            <div>
+              <button onClick={() => history('/report')}>New Bug</button>
+            </div>
+            <div>
+              <button onClick={logoutUser}>Logout</button>
+            </div>
+
           </div>
 
           {showUser &&
@@ -361,15 +549,12 @@ function Home() {
                   </select>
                 </div>
                 
-                <button onClick={addUser}>Add User</button>
+                <button className="addAll" onClick={addUser}>Add User</button>
                 
               </div>
             </div>
           }
-          <div>
-            <button onClick={()=> setShowProgram(true)}>Add Programs</button>
-          </div>
-
+          
           {
             showProgram &&
 
@@ -409,15 +594,11 @@ function Home() {
                   />
                 </div>
                 
-                <button onClick={addProgram}>Add Program</button>
+                <button className="addAll" style={{width:'150px'}} onClick={addProgram}>Add Program</button>
                 
               </div>
             </div>
           }
-
-          <div>
-            <button onClick={()=>setShowProgramArea(true)}>Add Program Areas</button>
-          </div>
 
           {
             showProgramArea &&
@@ -432,8 +613,9 @@ function Home() {
                   <select onChange={getVersion}>
                     <option value ="">Select the Program</option>
                     {
-                      pName.map(program=>(
-                        <option value={program.programName}>{program.programName}</option>
+                      
+                      upName.map((program)=>(
+                          <option value={program}>{program}</option>
                       ))
                     }
                   </select>
@@ -445,7 +627,7 @@ function Home() {
                     <option value ="">Select the Version</option>
                     {
                       version.map(version => (
-                        <option value={version.value}>{version.value}</option>
+                        <option value={version}>{version}</option>
                       ))
                     }
                   </select>
@@ -454,7 +636,7 @@ function Home() {
                 <div>
                   Release Number :
                   <select onChange={getPid}>
-                    <option value ="">Select the Version</option>
+                    <option value ="">Select the Release</option>
                     {
                       release.map(release => (
                         <option value={release.value}>{release.value}</option>
@@ -484,9 +666,7 @@ function Home() {
             </div>
           }
 
-          <div>
-            <button onClick={exportUser}>Export</button>
-          </div>
+          
 
           <hr/>
             <table>
@@ -514,7 +694,9 @@ function Home() {
                 </tbody>
             </table>
           <hr/>
-
+          <div>
+            <button className="exportUser" onClick={exportUser}>Export Users</button>
+          </div>
           { updateUser.id !== '' &&
             <div className='userCard'>
               <div className='pCardBody'>
@@ -642,39 +824,218 @@ function Home() {
             </div>
           }
 
-          <hr/>
+          
+          <div style={{paddingLeft:'10px'}}>
+            Fetch Program Areas :
+          </div>
 
-          <div>
-            <div> Select a Program</div>
-            <select name="" onChange={(e)=>setpAreaID(e.target.value)}>
+          <div className='getArea'>
+            <div> Select a Program : </div>
+            <select name="" onChange={getVersion}>
               <option value="">Select a Program</option>
               {
-                pName.map(program=>(
-                  <option value={program.pid}>{program.programName}</option>
+                upName.map(program=>(
+                  <option value={program}>{program}</option>
                 ))
               }
             </select>
-          </div>
+
+            <div> Select a Version : </div>
+            <select name="" onChange={getRelease}>
+              <option value="">Select a Version</option>
+              {
+                version.map(version=>(
+                  <option value={version}>{version}</option>
+                ))
+              }
+            </select>
+
+            <div> Select a Release : </div>
+            <select name="" onChange={getPid}>
+              <option value="">Select a Release</option>
+              {
+                release.map(release=>(
+                  <option value={release.value}>{release.value}</option>
+                ))
+              }
+            </select>
+          
 
           <div>
             <button onClick={getProgramAreas}>Get Program Area(s)</button>
           </div>
 
           <div>
+            <button onClick={exportAreas}>Export</button>
+          </div>
+          </div>
+
+          <div className="area-container">
             {
               pArea.map((area)=>(
-                <div style={{display:'flex', padding:'5px'}}>
-                  <div>{area.areaName}</div>
-                  <button onClick={() => {updatePArea({aid : area.aid, pid : area.pid})}}>Update</button>
+                <div  className="area-item">
+                  <div className="area-name" >{area.areaName}</div>
+                  <button  className="update-button" onClick={() => {updatePArea({aid : area.aid, pid : area.pid})}}>Update</button>
                   
                 </div>
               ))
             }
           </div>
 
-          <div>
-            <button onClick={exportAreas}>Export</button>
+          <hr/>
+      </>
+        }
+          <div style={{paddingLeft:'10px'}}>
+            Fetch Reports :
           </div>
+          <div>
+          <table>
+                <thead>
+                    <tr>
+                        <th>Program Name</th>
+                        <th>Version</th>
+                        <th>Release</th>
+                        <th>Report Type</th>
+                        <th>Severity</th>
+                        <th>Reproducible</th>
+                        <th>Summary</th>
+                        <th>Problem</th>
+                        <th>Suggested Fix</th>
+                        <th>Report By</th>
+                        <th>Report Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {reports.map(report => (
+                        <tr key={report.rid}>
+                            <td>{pName.find(item => item.pid === parseInt(report.programName))?.programName}</td>
+                            <td>{pName.find(item => item.pid === parseInt(report.programName))?.version}</td>
+                            <td>{pName.find(item => item.pid === parseInt(report.programName))?.release}</td>
+                            <td>{report.bugType}</td>
+                            <td>{report.severity}</td>
+                            <td>{report.reproducible}</td>
+                            <td>{report.summary}</td>
+                            <td>{report.problem}</td>
+                            <td>{report.suggestedFix}</td>
+                            <td>{report.reportBy}</td>
+                            <td>{report.date.split('T')[0]}</td>
+                            <td>
+                                <button onClick={()=> history(`/reports/${report.rid}/${pName.find(item => item.pid === parseInt(report.programName))?.programName}`)} style={{backgroundColor:'green'}}>Update</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+
+            </table>
+          </div>
+
+          <hr/>
+          <div style={{paddingLeft:'10px'}}>
+            Search the Report : 
+          </div>
+          <div className='searchReport'>
+            
+            <select className = "select" onChange={(e)=>setSelectProgramR(e.target.value)}>
+              <option value=""> Select a Program</option>
+              {pName.map((program) => (
+                <option value={program.pid}>{program.programName + " V" + program.version + " R" + program.release}</option>
+              ))}
+            </select>
+
+            <select className = "select">
+              <option  value=""> Select a Report Type</option>
+              <option>Coding Error</option>
+              <option>Design Issue</option>
+              <option>Suggestion</option>
+              <option>Documentation</option>
+              <option>Hardware</option>
+              <option>Query</option>
+            </select>
+
+            <select className = "select" onChange={(e)=>setSelectSeverityR(e.target.value)}>
+              <option value=""> Select a Severity</option>
+              <option>Minor</option>
+              <option>Serious</option>
+              <option>Fatal</option>
+            </select>
+
+            <select className = "select" onChange={(e)=>setSelectUserR(e.target.value)}>
+              <option value=""> Select a Reported By</option>
+              {
+                allUsers.map((user)=>(
+                  <option value={user.username}>{user.username}</option>
+                ))
+              }
+            </select>
+
+            <select className = "select" onChange={(e)=>setSelectAUserR(e.target.value)}>
+              <option value=""> Select a Assign To</option>
+              {
+                allUsers.map((user)=>(
+                  <option value={user.username}>{user.username}</option>
+                ))
+              }
+            </select>
+
+            <select className = "select" onChange={(e)=>setSelectStatusR(e.target.value)}>
+              <option value=""> Select a Status</option>
+              <option>Open</option>
+              <option>Closed</option>
+            </select>
+
+            <button onClick={fetchReport}>Fetch</button>
+            <button onClick={resetSelect}>Reset</button>
+          </div>
+
+          {
+            showTable && 
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Program Name</th>
+                        <th>Version</th>
+                        <th>Release</th>
+                        <th>Report Type</th>
+                        <th>Severity</th>
+                        <th>Reproducible</th>
+                        <th>Summary</th>
+                        <th>Problem</th>
+                        <th>Suggested Fix</th>
+                        <th>Report By</th>
+                        <th>Report Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {report.map(report => (
+                        <tr key={report.rid}>
+                            <td>{pName.find(item => item.pid === parseInt(report.programName)).programName}</td>
+                            <td>{pName.find(item => item.pid === parseInt(report.programName)).version}</td>
+                            <td>{pName.find(item => item.pid === parseInt(report.programName)).release}</td>
+                            <td>{report.bugType}</td>
+                            <td>{report.severity}</td>
+                            <td>{report.reproducible}</td>
+                            <td>{report.summary}</td>
+                            <td>{report.problem}</td>
+                            <td>{report.suggestedFix}</td>
+                            <td>{report.reportBy}</td>
+                            <td>{report.date.split('T')[0]}</td>
+                            <td>
+                              {report.status === 'open' && 
+                                <button onClick={() => setUpdateUser(user)} style={{backgroundColor:'green'}}>Update</button>
+                              }
+                                
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+
+            </table>
+          }
+      </>
+        </div>
       </>
     );
   }

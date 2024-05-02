@@ -42,7 +42,8 @@ const Login = ()=>{
             const response = await axios.get(`http://localhost:8000/login/${email}/${pwd}/`)
             
             let arr = {
-                username : response.data.username
+                username : response.data.username,
+                accessType : response.data.accessType
             }
             localStorage.setItem('userDetails', JSON.stringify(arr));
             history('/home');
