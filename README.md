@@ -14,10 +14,10 @@ Bughound is a secure, web-based bug recording and tracking software designed for
 
 ## Technologies Used
 
-- **Frontend:** React.js
-- **Backend:** Django
-- **Database:** MySQL
-- **API Testing:** Postman
+- **Frontend:** React.js, HTML/CSS, JavaScript.
+- **Backend:** Django, Python, SQL.
+- **Database:** MySQL.
+- **API Testing:** Postman.
 
 ## Getting Started
 
