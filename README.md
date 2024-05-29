@@ -10,7 +10,7 @@ Bughound is a secure, web-based bug recording and tracking software designed for
 - **Relational Database:** Store error report content in relational tables, accessible via SQL queries.
 - **Search Functionality:** Search for bugs based on multiple fields to facilitate efficient bug tracking.
 - **Data Management:** Manage information related to programs, releases, functional areas, employees, and more.
-- **Security:** Secure access with an authorized user login is required for accessing and managing bug reports.
+- **Security:** Secure access with an authorized user login is required for accessing & managing bug reports.
 
 ## Technologies Used
 
