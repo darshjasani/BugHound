@@ -5,7 +5,7 @@
 Bughound is a secure, web-based bug recording and tracking software designed for testing and verifying product functionality. The project is a scaled-back version of a previous product developed for a company in Bellevue, WA. Its primary purpose is to serve as a common basis for testing on a reasonable scale, focusing on correctly delivered functionality through black-box testing.
 
 ## Key Features
-
+ 
 - **Bug Reporting:** Create, edit, and update bug reports for multiple products via a web browser interface.
 - **Relational Database:** Store error report content in relational tables, accessible via SQL queries.
 - **Search Functionality:** Search for bugs based on multiple fields to facilitate efficient bug tracking.
